@@ -3,5 +3,6 @@ package domain.inventory.enums;
 public enum InventoryStatus {
   WAITING,
   RESERVED,
-  REJECTED;
+  REJECTED,
+  ROLLED_BACK;
 }

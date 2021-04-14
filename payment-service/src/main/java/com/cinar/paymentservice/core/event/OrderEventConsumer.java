@@ -32,10 +32,13 @@ public class OrderEventConsumer {
       paymentEventPublisher.publish(new PaymentEvent(event.getOrder().getId(), event.getOrder()
           .getUserId(), status));
 
-    } else {
+    } else if (!event.getOrder().getPaymentStatus().equals(PaymentStatus.REJECTED)) {
       cancelPaymentUseCase
           .run(new CancelPaymentUseCaseInput(event.getOrder().getId(), event.getOrder()
               .getProductId(), event.getOrder().getPrice()));
+
+      paymentEventPublisher.publish(new PaymentEvent(event.getOrder().getId(), event.getOrder()
+          .getUserId(), PaymentStatus.ROLLED_BACK));
     }
     acknowledgment.acknowledge();
   }

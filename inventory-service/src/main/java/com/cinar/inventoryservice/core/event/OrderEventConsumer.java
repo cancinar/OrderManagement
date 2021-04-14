@@ -32,10 +32,13 @@ public class OrderEventConsumer {
       inventoryEventPublisher.publish(new InventoryEvent(event.getOrder().getId(), event.getOrder()
           .getUserId(), status));
 
-    } else {
+    } else if (!event.getOrder().getInventoryStatus().equals(InventoryStatus.REJECTED)) {
       cancelOrderProductUseCase
           .run(new CancelOrderProductUseCaseInput(event.getOrder().getId(), event.getOrder()
               .getProductId(), event.getOrder().getPrice()));
+
+      inventoryEventPublisher.publish(new InventoryEvent(event.getOrder().getId(), event.getOrder()
+          .getUserId(), InventoryStatus.ROLLED_BACK));
     }
     acknowledgment.acknowledge();
   }

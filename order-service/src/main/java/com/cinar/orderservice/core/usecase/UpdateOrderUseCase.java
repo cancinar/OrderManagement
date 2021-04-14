@@ -25,29 +25,17 @@ public class UpdateOrderUseCase implements
     input.validate();
     final OrderDomain order = input.getOrder();
 
-    boolean isCompleted =
-        PaymentStatus.RESERVED == order.getPaymentStatus() && InventoryStatus.RESERVED == order
-            .getInventoryStatus();
+    input.getUpdate().accept(order);
 
-    boolean processing = (PaymentStatus.WAITING == order.getPaymentStatus()
-        && InventoryStatus.RESERVED == order.getInventoryStatus()) || (
-        PaymentStatus.RESERVED == order.getPaymentStatus()
-            && InventoryStatus.WAITING == order.getInventoryStatus());
-
-    if (isCompleted) {
-      order.setOrderStatus(OrderStatus.COMPLETED);
-    } else if (processing) {
-      order.setOrderStatus(OrderStatus.PROCESSING);
-    } else {
-      order.setOrderStatus(OrderStatus.CANCELLED);
-    }
     OrderDomain update;
     synchronized (this) {
       update = purchaseOrderRepository.update(order);
     }
 
-    if (order.getOrderStatus() == OrderStatus.CANCELLED) {
-      orderStatusPublisher.publish(order);
+    if ((order.getPaymentStatus() != PaymentStatus.ROLLED_BACK
+        && order.getInventoryStatus() != InventoryStatus.ROLLED_BACK) && (order.getOrderStatus()
+        != OrderStatus.COMPLETED)) {
+      orderStatusPublisher.publish(update);
     }
 
     return new UpdateOrderUseCaseOutput(update);

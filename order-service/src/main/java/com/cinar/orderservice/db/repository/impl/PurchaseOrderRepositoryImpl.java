@@ -1,7 +1,10 @@
 package com.cinar.orderservice.db.repository.impl;
 
+import static domain.order.enums.OrderStatus.CANCELLED;
+import static domain.order.enums.OrderStatus.COMPLETED;
 import static domain.order.enums.OrderStatus.CREATED;
 import static exception.util.ExceptionUtil.validationException;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 import annotation.DomainRepository;
 import com.cinar.orderservice.core.repository.PurchaseOrderRepository;
@@ -11,8 +14,6 @@ import domain.inventory.enums.InventoryStatus;
 import domain.order.OrderDomain;
 import domain.payment.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 @DomainRepository
 @AllArgsConstructor
@@ -41,15 +42,25 @@ public class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   }
 
   @Override
-  @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrderDomain update(OrderDomain order) {
-      PurchaseOrder purchaseOrder = find(order.getId());
-      purchaseOrder.setPrice(order.getPrice());
-      purchaseOrder.setOrderStatus(order.getOrderStatus());
-      purchaseOrder.setInventoryStatus(order.getInventoryStatus());
-      purchaseOrder.setPaymentStatus(order.getPaymentStatus());
+    PurchaseOrder purchaseOrder = find(order.getId());
 
-      return purchaseOrderJPARepository.saveAndFlush(purchaseOrder).toOrderDomain();
+    if (!isEmpty(order.getPaymentStatus())) {
+      purchaseOrder.setPaymentStatus(order.getPaymentStatus());
+    }
+    if (!isEmpty(order.getInventoryStatus())) {
+      purchaseOrder.setInventoryStatus(order.getInventoryStatus());
+    }
+
+    if (purchaseOrder.getPaymentStatus() == PaymentStatus.RESERVED
+        && purchaseOrder.getInventoryStatus() == InventoryStatus.RESERVED) {
+      purchaseOrder.setOrderStatus(COMPLETED);
+    } else if (purchaseOrder.getInventoryStatus() == InventoryStatus.REJECTED
+        || purchaseOrder.getPaymentStatus() == PaymentStatus.REJECTED) {
+      purchaseOrder.setOrderStatus(CANCELLED);
+    }
+
+    return purchaseOrderJPARepository.save(purchaseOrder).toOrderDomain();
   }
 
   private PurchaseOrder find(Long id) {
