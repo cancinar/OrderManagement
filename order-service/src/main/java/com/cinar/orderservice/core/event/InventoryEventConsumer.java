@@ -9,8 +9,8 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-@AllArgsConstructor
 @Component
+@AllArgsConstructor
 public class InventoryEventConsumer {
 
   private final UpdateOrderUseCase updateOrderUseCase;
@@ -18,7 +18,7 @@ public class InventoryEventConsumer {
   @KafkaListener(topics = "inventory-event", groupId = "inventory")
   public void handleInventoryEvent(@Payload InventoryEvent inventoryEvent,
       Acknowledgment acknowledgment) {
-    updateOrderUseCase.run(new UpdateOrderUseCaseInput(inventoryEvent.toOrderDomain(),
+    updateOrderUseCase.apply(new UpdateOrderUseCaseInput(inventoryEvent.toOrderDomain(),
         po -> po.setInventoryStatus(inventoryEvent.getStatus())));
     acknowledgment.acknowledge();
   }

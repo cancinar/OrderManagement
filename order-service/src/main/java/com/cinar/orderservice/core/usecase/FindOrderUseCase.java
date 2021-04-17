@@ -15,7 +15,7 @@ public class FindOrderUseCase implements
   private final PurchaseOrderRepository purchaseOrderRepository;
 
   @Override
-  public FindOrderUseCaseOutput run(FindOrderUseCaseInput input) {
+  public FindOrderUseCaseOutput apply(FindOrderUseCaseInput input) {
     input.validate();
 
     return new FindOrderUseCaseOutput(purchaseOrderRepository.findById(input.getOrderId()));

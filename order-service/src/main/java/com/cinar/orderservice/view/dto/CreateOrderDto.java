@@ -11,5 +11,4 @@ public class CreateOrderDto implements Serializable {
   private Long userId;
   private Long productId;
   private Long price;
-
 }

@@ -1,6 +1,6 @@
 package com.cinar.orderservice.core.usecase.io;
 
-import domain.order.enums.OrderStatus;
+import domain.order.OrderDomain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import usecase.Output;
@@ -9,6 +9,5 @@ import usecase.Output;
 @AllArgsConstructor
 public class CreateOrderUseCaseOutput implements Output {
 
-  private Long productId;
-  private OrderStatus status;
+  private OrderDomain order;
 }

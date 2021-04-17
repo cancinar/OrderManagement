@@ -22,3 +22,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/inventorydb
     username: inventoryuser
     password: ordermanagement1234
+    
+kafka:
+  inventory-topic: inventory-event

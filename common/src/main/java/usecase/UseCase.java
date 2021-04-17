@@ -1,6 +1,6 @@
 package usecase;
 
-public interface UseCase<I extends Input, O extends Output> {
+import java.util.function.Function;
 
-  O run(I input);
+public interface UseCase<I extends Input, O extends Output> extends Function<I,O> {
 }

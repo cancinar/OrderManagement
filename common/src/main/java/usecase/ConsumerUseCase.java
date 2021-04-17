@@ -1,7 +1,8 @@
 package usecase;
 
-@FunctionalInterface
-public interface ConsumerUseCase<I extends Input> {
+import java.util.function.Consumer;
 
-  void run(I input);
+@FunctionalInterface
+public interface ConsumerUseCase<I extends Input> extends Consumer<I> {
+
 }
