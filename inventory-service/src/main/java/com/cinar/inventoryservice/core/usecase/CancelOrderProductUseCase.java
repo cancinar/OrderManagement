@@ -16,7 +16,7 @@ public class CancelOrderProductUseCase implements
 
   @Override
   @Transactional
-  public void run(CancelOrderProductUseCaseInput input) {
+  public void accept(CancelOrderProductUseCaseInput input) {
     inventoryDomainRepository
         .cancelProduct(input.getOrderId(), input.getProductId(), input.getAmount());
   }

@@ -9,7 +9,9 @@ import domain.inventory.enums.InventoryStatus;
 import domain.order.OrderDomain;
 import domain.order.enums.OrderStatus;
 import domain.payment.enums.PaymentStatus;
+import event.order.OrderEvent;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import usecase.UseCase;
 
 @UseCaseComponent
@@ -19,9 +21,12 @@ public class UpdateOrderUseCase implements
 
   private final PurchaseOrderRepository purchaseOrderRepository;
   private final OrderStatusPublisher orderStatusPublisher;
+  @Value("${kafka.order-topic}")
+  private final String orderTopic;
+
 
   @Override
-  public UpdateOrderUseCaseOutput run(UpdateOrderUseCaseInput input) {
+  public UpdateOrderUseCaseOutput apply(UpdateOrderUseCaseInput input) {
     input.validate();
     final OrderDomain order = input.getOrder();
 
@@ -35,7 +40,7 @@ public class UpdateOrderUseCase implements
     if ((order.getPaymentStatus() != PaymentStatus.ROLLED_BACK
         && order.getInventoryStatus() != InventoryStatus.ROLLED_BACK) && (order.getOrderStatus()
         != OrderStatus.COMPLETED)) {
-      orderStatusPublisher.publish(update);
+      orderStatusPublisher.publish(orderTopic, new OrderEvent(update));
     }
 
     return new UpdateOrderUseCaseOutput(update);
