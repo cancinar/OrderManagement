@@ -1,4 +1,4 @@
-![](https://github.com/cancinar/ordermanagement/actions/workflows/build.yml/badge.svg?branch=develop)
+![](https://github.com/cancinar/ordermanagement/actions/workflows/dev-build-action.yml/badge.svg?branch=develop)
 
 # Order Management
 This project was created for demonstration of Saga Choreograph Pattern using Clean Code Architecture.
