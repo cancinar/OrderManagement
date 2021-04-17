@@ -1,3 +1,5 @@
+![example workflow](https://github.com/cancinar/ordermanagement/actions/workflows/build.yml/badge.svg)
+
 # Order Management
 This project was created for demonstration of Saga Choreograph Pattern using Clean Code Architecture.
 
