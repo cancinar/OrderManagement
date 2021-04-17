@@ -17,7 +17,7 @@ public class PaymentEventConsumer {
 
   @KafkaListener(topics = "payment-event", groupId = "payment")
   public void handle(@Payload PaymentEvent paymentEvent, Acknowledgment acknowledgment) {
-    updateOrderUseCase.run(new UpdateOrderUseCaseInput(paymentEvent.toOrderDomain(),
+    updateOrderUseCase.apply(new UpdateOrderUseCaseInput(paymentEvent.toOrderDomain(),
         po -> po.setPaymentStatus(paymentEvent.getStatus())));
     acknowledgment.acknowledge();
   }

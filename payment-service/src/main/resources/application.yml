@@ -22,3 +22,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/paymentdb
     username: paymentuser
     password: ordermanagement1234
+
+kafka:
+  payment-topic: payment-event

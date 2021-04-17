@@ -16,7 +16,7 @@ public class ReservePaymentUseCase implements
   private final UserDomainRepository userDomainRepository;
 
   @Override
-  public ReservePaymentUseCaseOutput run(ReservePaymentUseCaseInput input) {
+  public ReservePaymentUseCaseOutput apply(ReservePaymentUseCaseInput input) {
     final PaymentStatus paymentStatus = userDomainRepository
         .reservePayment(input.getOrderId(), input.getUserId(), input.getPrice());
     return new ReservePaymentUseCaseOutput(paymentStatus);

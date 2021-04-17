@@ -1,6 +1,6 @@
 package com.cinar.orderservice.core.event;
 
-import domain.order.OrderDomain;
+import event.EventPublisher;
 import event.order.OrderEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,13 +11,13 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Component
 @AllArgsConstructor
-public class OrderStatusPublisher {
+public class OrderStatusPublisher implements EventPublisher<OrderEvent> {
 
   private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
 
-  public void publish(final OrderDomain order) {
+  public void publish(String topic, OrderEvent orderEvent) {
     final ListenableFuture<SendResult<String, OrderEvent>> send = kafkaTemplate
-        .send("order-event", new OrderEvent(order));
+        .send("order-event", orderEvent);
 
     send.addCallback(new ListenableFutureCallback<>() {
       @Override
@@ -31,6 +31,5 @@ public class OrderStatusPublisher {
 
       }
     });
-    //this.orderSink.tryEmitNext(new OrderEvent(order));
   }
 }

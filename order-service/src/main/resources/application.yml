@@ -22,3 +22,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/orderdb
     username: orderuser
     password: ordermanagement1234
+
+kafka:
+  order-topic: order-event

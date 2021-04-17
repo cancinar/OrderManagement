@@ -1,5 +1,6 @@
 package com.cinar.inventoryservice.core.event;
 
+import event.EventPublisher;
 import event.inventory.InventoryEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -10,13 +11,14 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Component
 @AllArgsConstructor
-public class InventoryEventPublisher {
+public class InventoryEventPublisher implements EventPublisher<InventoryEvent> {
 
   private final KafkaTemplate<String, InventoryEvent> kafkaTemplate;
 
-  public void publish(final InventoryEvent event) {
+  @Override
+  public void publish(String topic, InventoryEvent inventoryEvent) {
     final ListenableFuture<SendResult<String, InventoryEvent>> send = kafkaTemplate
-        .send("inventory-event", event);
+        .send(topic, inventoryEvent);
 
     send.addCallback(new ListenableFutureCallback<>() {
       @Override

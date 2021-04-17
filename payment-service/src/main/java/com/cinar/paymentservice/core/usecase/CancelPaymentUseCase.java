@@ -14,7 +14,7 @@ public class CancelPaymentUseCase implements
   private final UserDomainRepository userDomainRepository;
 
   @Override
-  public void run(CancelPaymentUseCaseInput input) {
+  public void accept(CancelPaymentUseCaseInput input) {
     userDomainRepository
         .cancelPayment(input.getOrderId(), input.getUserId(), input.getPrice());
   }
